@@ -1,0 +1,17 @@
+node_modules/
+
+uploads/shorts/
+uploads/thumbnail/
+reeloid-fcn-firebase-adminsdk-p7rd5-43d4fb93e4.json
+uploads/
+
+
+# Firebase secrets
+reeloid-47c30-firebase-adminsdk-4nweu-d2b75bd806.json
+*-firebase-adminsdk-*.json
+
+# Environment variables
+*.env
+
+# Node modules
+node_modules/
