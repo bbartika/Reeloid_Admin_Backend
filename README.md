@@ -87,17 +87,11 @@ The system integrates **Tencent Cloud VOD** for media processing and uses **Redi
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone Repository
+## ⚙️ Installation & Setup
 
-```bash
-git clone https://github.com/bbartika/Reeloid_Admin_Backend.git
-cd Reeloid_Admin_Backend
+### Install Dependencies
 
-Install Dependencies
 npm install
-3️⃣ Setup Environment Variables
-
-Create a .env file in root directory:
 
 PORT=5000
 
@@ -114,9 +108,14 @@ REDIS_PORT=6379
 
 # Firebase
 FIREBASE_SERVER_KEY=your_firebase_key
-4️⃣ Start Server
+
+
+
+Start Server
 npm start
-🔁 Background Processing Flow
+## 🔁 Background Processing Flow
+
+```text
 Upload Request
    ↓
 API Receives Data
@@ -128,45 +127,3 @@ Worker Processes Job (Async)
 Upload to Tencent Cloud (VOD/COS)
    ↓
 Update Database with Media URLs
-🧠 Key Challenges & Solutions
-🔥 Challenge: Maintaining Order in Async Processing
-Uploading multiple shorts and audios caused order mismatch
-Background jobs complete in random order
-✅ Solution:
-Implemented index-based ordering system
-Each file assigned an index during upload
-Order preserved while updating DB
-🔥 Challenge: Heavy Media Processing
-Video transcoding is time-consuming
-✅ Solution:
-Used Redis + Bull Queue
-Offloaded heavy work to background workers
-Ensured fast API response
-🔥 Challenge: Data Consistency
-Sync between Movies, Shorts, and Audio
-✅ Solution:
-Controlled updates after all jobs completed
-Used count tracking system
-📂 Project Structure (Simplified)
-├── controllers/
-├── models/
-├── routes/
-├── services/
-├── queue/
-├── workers/
-├── uploads/
-├── config/
-└── app.js
-🔐 Security & Reliability
-Uses temporary credentials for Tencent uploads
-Implements error handling & retries
-File cleanup for unused uploads
-Prevents duplicate entries
-🚀 Future Improvements
-Add microservices architecture
-Implement real-time streaming analytics
-Improve search using Elasticsearch
-Add rate limiting & caching (Redis)
-👨‍💻 Author
-
-Bimugdha Biswas
