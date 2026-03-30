@@ -1,125 +1,172 @@
-# **Streaming App Admin Panel – Backend**
+# 🎬 Reeloid Admin Backend
 
-This project serves as the backend for a **Streaming Application's Admin Panel**. It provides RESTful APIs to manage content, genres, users, and background processing, tailored to the needs of a streaming platform.
+## 📌 Overview
 
----
+Reeloid Admin Backend is a scalable **Node.js/Express backend system** designed for managing a short-video streaming platform.  
+It enables administrators to manage movies, trailers, shorts, ads, and multilingual content while ensuring **high performance, scalability, and non-blocking operations**.
 
-## **Features**
-
-- **Content Management**: Create, read, update, delete streaming content.
-- **Genre Management**: Upload genre images and manage genre metadata.
-- **User Management**: Handle admin/user-level data.
-- **Queue System**: Background job management.
-- **Clean Architecture**: Modular folder structure with controllers, models, services, and routes.
+The system integrates **Tencent Cloud VOD** for media processing and uses **Redis + Bull Queue** for background job handling, ensuring smooth uploads and efficient processing of heavy media tasks.
 
 ---
 
-## **Project Structure**
+## 🚀 Features
+
+### 🎥 Media Management
+
+- Upload and manage **movies, trailers, and short videos**
+- Support for **multi-language audio uploads**
+- Video/audio **transcoding via Tencent Cloud VOD**
+- Device-friendly media URL generation
+
+### ⚡ Background Processing
+
+- Implemented **Redis + Bull Queue** for async job processing
+- Handles **video uploads, transcoding, and audio processing** in background
+- Ensures **non-blocking API performance**
+
+### 🔄 Order Consistency System
+
+- Maintains correct order of **shorts and audio files**
+- Uses **index-based mapping** to prevent mismatch during async processing
+
+### 📢 Advertisement System
+
+- Dynamic **ad insertion system**
+- Insert ads:
+  - After a fixed number of reels
+  - At custom positions
+- Supports **custom ad management**
+
+### 💳 Subscription System
+
+- Manage premium plans
+- Enable:
+  - Ad-free viewing
+  - Exclusive content access
+
+### 🔔 Push Notification System
+
+- Built using **Firebase**
+- Supports:
+  - Scheduled notifications
+  - Recurring campaigns
+  - Queue-based delivery
+
+### 📊 Analytics Module
+
+- Tracks:
+  - User engagement
+  - Watch time
+  - Ad impressions
+  - User activity
+- Helps optimize **recommendations & revenue**
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB (Mongoose)
+
+### Queue & Background Jobs
+- Redis
+- Bull Queue
+
+### Cloud & Media Processing
+- Tencent Cloud VOD
+- Tencent COS (Object Storage)
+
+### Notifications
+- Firebase Cloud Messaging (FCM)
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone Repository
 
 ```bash
-.vscode/                 # Editor settings for VS Code
-controllers/             # Request handlers (content, genre, user)
-models/                  # MongoDB schemas
-queue/                   # Job queue logic
-routes/                  # All routing files
-services/                # Business logic and service layer
-uploads/genreImage/      # Uploaded genre images
-util/                    # Helper utilities
-index.js                 # App entry point
-package.json             # NPM dependencies
-.gitignore               # Ignored files for Git
-```
+git clone https://github.com/bbartika/Reeloid_Admin_Backend.git
+cd Reeloid_Admin_Backend
 
----
-
-#### **Installing Redis**
-
-- **Windows**: Use [Memurai](https://www.memurai.com/) or [WSL](https://learn.microsoft.com/en-us/windows/wsl/) to run Redis in a Linux environment.
-- **Ubuntu/Linux**:
-  ```bash
-  sudo apt update
-  sudo apt install redis-server
-  sudo systemctl enable redis
-  sudo systemctl start redis
-  ```
-- **macOS (with Homebrew)**:
-  ```bash
-  brew install redis
-  brew services start redis
-  ```
-
-Make sure Redis is running before starting the application because it will help us to run bull package.
-
-## **Installation & Setup**
-
-### **Prerequisites**
-
-- [Node.js](https://nodejs.org/)
-- [MongoDB](https://www.mongodb.com/)
-- [Redis](https://redis.io/): Required for Bull queue system
-
-### **Steps**
-
-```bash
-# Clone the repository
-git clone https://github.com/shivam5676/streaming_app_admin_panel-_Backend.git
-cd streaming_app_admin_panel-_Backend
-
-# Install dependencies
+Install Dependencies
 npm install
+3️⃣ Setup Environment Variables
 
-# Create a .env file
-PORT=8765
-MONGODB_URI=use your own mongo connection url and many other secrets will be there
+Create a .env file in root directory:
 
-# Run the application
+PORT=5000
+
+# MongoDB
+MONGO_URI=your_mongodb_connection
+
+# Tencent Cloud
+SECRETID=your_secret_id
+SECRETKEY=your_secret_key
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Firebase
+FIREBASE_SERVER_KEY=your_firebase_key
+4️⃣ Start Server
 npm start
-```
+🔁 Background Processing Flow
+Upload Request
+   ↓
+API Receives Data
+   ↓
+Push Job to Bull Queue
+   ↓
+Worker Processes Job (Async)
+   ↓
+Upload to Tencent Cloud (VOD/COS)
+   ↓
+Update Database with Media URLs
+🧠 Key Challenges & Solutions
+🔥 Challenge: Maintaining Order in Async Processing
+Uploading multiple shorts and audios caused order mismatch
+Background jobs complete in random order
+✅ Solution:
+Implemented index-based ordering system
+Each file assigned an index during upload
+Order preserved while updating DB
+🔥 Challenge: Heavy Media Processing
+Video transcoding is time-consuming
+✅ Solution:
+Used Redis + Bull Queue
+Offloaded heavy work to background workers
+Ensured fast API response
+🔥 Challenge: Data Consistency
+Sync between Movies, Shorts, and Audio
+✅ Solution:
+Controlled updates after all jobs completed
+Used count tracking system
+📂 Project Structure (Simplified)
+├── controllers/
+├── models/
+├── routes/
+├── services/
+├── queue/
+├── workers/
+├── uploads/
+├── config/
+└── app.js
+🔐 Security & Reliability
+Uses temporary credentials for Tencent uploads
+Implements error handling & retries
+File cleanup for unused uploads
+Prevents duplicate entries
+🚀 Future Improvements
+Add microservices architecture
+Implement real-time streaming analytics
+Improve search using Elasticsearch
+Add rate limiting & caching (Redis)
+👨‍💻 Author
 
-App will run at: `http://localhost:8765`
-
----
-
-> **Note:** Authentication and authorization should be implemented for security (not included in base setup).
-
----
-
-## **File Highlights**
-
-- **controllers/**
-  - `AddMovies.js`, `AllMovies.js`, `AllLanguages.js`
-- **models/**
-  - MongoDB schemas for `movies`, `genre`,`shorts` and `user`
-- **services/**
-  - Business logic split from controllers
-- **queue/**
-  - Queue implementation for async jobs like notification ,uploading content
-- **routes/**
-  - Route handlers for each module
-
----
-
-## **Contributing**
-
-Contributions, issues, and feature requests are welcome.
-
-1. Fork the project
-2. Create a new branch
-3. Commit your changes
-4. Open a pull request
-
----
-
-## **License**
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more info.
-
----
-
-## **Contact**
-
-Maintained by [shivam5676](https://github.com/shivam5676)
-
----
-
-> **Note:** Always add authentication, input validation, and error handling before deploying in production.
+Bimugdha Biswas
