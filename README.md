@@ -127,3 +127,8 @@ Worker Processes Job (Async)
 Upload to Tencent Cloud (VOD/COS)
    ↓
 Update Database with Media URLs
+
+## 📞 Contact
+
+- GitHub: https://github.com/bbartika
+- Feel free to connect for collaboration or opportunities!
